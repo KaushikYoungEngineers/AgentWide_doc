@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Authentication Flow API</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; background: #fdfdfd; padding: 2rem; }
+    h1, h2, h3 { color: #222; }
+    pre {
+      background: #f4f4f4;
+      padding: 1rem;
+      border-left: 4px solid #007BFF;
+      overflow-x: auto;
+    }
+    code { font-family: monospace; }
+    .endpoint {
+      margin-bottom: 2rem;
+    }
+    .note {
+      background: #fff3cd;
+      padding: 1rem;
+      border-left: 4px solid #ffc107;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔐 Authentication Flow API</h1>
+
+  <div class="endpoint">
+    <h2>1. Login API</h2>
+    <h3>POST /api/v1/auth/login</h3>
+    <pre><code>{
+  "email": "string",
+  "password": "string", // For email login
+  "login_type": "string", // Enum: "email", "google", "facebook", "apple"
+  "token": "string" // Required for social auth
+}</code></pre>
+    <p><strong>Response:</strong> Same as <code>GET /api/v1/auth/onboarding-details</code></p>
+  </div>
+
+  <div class="endpoint">
+    <h2>2. Get Onboarding Details</h2>
+    <h3>GET /api/v1/auth/onboarding-details</h3>
+    <p><strong>Headers:</strong> Authorization: Bearer {user_token}</p>
+    <pre><code>{
+  "user_token": "string",
+  "profile_data": {
+    // All registration fields with their current values
+  }
+}</code></pre>
+  </div>
+
+  <div class="endpoint">
+    <h2>3. Registration API (Multi-Step)</h2>
+    <h3>POST /api/v1/auth/register</h3>
+
+    <h4>Step 1 - Basic Info</h4>
+    <pre><code>{
+  "profile_img": "file", // optional
+  "name": "string", "email": "string",
+  "mobile_number": "string",
+  "password": "string",
+  "country": "string"
+}</code></pre>
+
+    <h4>Step 2 - Role Selection</h4>
+    <pre><code>{
+  "user_role": "string" // optional
+}</code></pre>
+
+    <h4>Step 3 - Identity Verification</h4>
+    <pre><code>{
+  "document_type": "string",
+  "document_number": "string",
+  "document_front_img": "file",
+  "document_back_img": "file"
+}</code></pre>
+
+    <h4>Step 4 - License Verification</h4>
+    <pre><code>{
+  "licence_number": "string",
+  "licence_img": "file"
+}</code></pre>
+
+    <h4>Step 5 - Terms of Use</h4>
+    <pre><code>{
+  "tou_accepted": "boolean"
+}</code></pre>
+
+    <h4>Step 6 - Contact Method</h4>
+    <pre><code>{
+  "contact_method": "string",
+  "contact_number": "string"
+}</code></pre>
+
+    <h4>Step 7 - Agreement</h4>
+    <pre><code>{
+  "aw_agreement_signed": "boolean"
+}</code></pre>
+  </div>
+
+  <div class="endpoint">
+    <h2>4. Forgot Password APIs</h2>
+
+    <h3>POST /api/v1/auth/forgot-password</h3>
+    <pre><code>{
+  "email": "string"
+}</code></pre>
+
+    <h3>POST /api/v1/auth/verify-email-code</h3>
+    <pre><code>{
+  "email": "string",
+  "code": "string"
+}</code></pre>
+
+    <h3>POST /api/v1/auth/reset-password</h3>
+    <pre><code>{
+  "email": "string",
+  "new_password": "string"
+}</code></pre>
+  </div>
+
+  <div class="note">
+    <h3>🔍 Notes:</h3>
+    <ul>
+      <li>Use <strong>multipart/form-data</strong> for file uploads</li>
+      <li>Return appropriate HTTP status codes</li>
+      <li>Include detailed messages in error responses</li>
+      <li>Authorization header required after login</li>
+      <li>All registration fields are optional per step</li>
+      <li>Single unified endpoint used for all registration steps</li>
+    </ul>
+  </div>
+
+</body>
+</html>
