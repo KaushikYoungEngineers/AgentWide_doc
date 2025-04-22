@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Property API Documentation</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; background: #fdfdfd; padding: 2rem; }
+    h1, h2, h3 { color: #222; }
+    pre {
+      background: #f4f4f4;
+      padding: 1rem;
+      border-left: 4px solid #007BFF;
+      overflow-x: auto;
+    }
+    code { font-family: monospace; }
+    .endpoint {
+      margin-bottom: 2rem;
+    }
+    .note {
+      background: #fff3cd;
+      padding: 1rem;
+      border-left: 4px solid #ffc107;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏡 Property API Documentation</h1>
+
+  <!-- Property Submission Flow with Agreement -->
+  <div class="endpoint">
+    <h2>1. Property Submission Flow (with Agreement)</h2>
+
+    <h3>Step 1: Create or Save Property as Draft</h3>
+    <h4>POST /api/v1/property/create</h4>
+    <p><strong>Query Parameters:</strong></p>
+    <pre><code>{
+  "isDraft": true // Set to true to save property as draft
+}</code></pre>
+    <p><strong>Body:</strong></p>
+    <pre><code>{
+        "title": "Luxury Apartment", // required, the title of the property
+        "description": "Sea-facing 3BHK apartment", // required, detailed description of the property
+        "type": "Apartment", // required, type of property (e.g., Apartment, Villa)
+        "category": "Sale", // required, property category (e.g., Sale, Rent)
+        "propertyUse": "Residential", // required, type of use (e.g., Residential, Commercial)
+        "availability": "Immediate", // (e.g., Immediate, On Request)
+        
+        "address": "123 Street Name", // full street address
+        "city": "Mumbai", // city name
+        "state": "Maharashtra", // state name
+        "country": "India", // country name
+        "zipcode": "400001", // optional, postal/ZIP code
+        
+        "coordinates": { 
+          "lat": 19.07, // latitude of the property
+          "lng": 72.87  // longitude of the property
+        },
+      
+        "bedrooms": 3, // number of bedrooms
+        "bathrooms": 2, // number of bathrooms
+        "balconies": 2, // number of balconies
+        "area": { 
+          "value": 1500, // required, the area of the property
+          "unit": "sqft" // required, unit of measurement (e.g., sqft, sqm)
+        },
+      
+        "builtYear": 2020, // year of construction
+        "floor": 5, // floor number of the property
+        "totalFloors": 10, // total number of floors in the building
+        "furnishing": "Semi-Furnished", // furnishing status (e.g., Unfurnished, Semi-Furnished, Fully)
+        "parking": true, // whether the property has parking space
+        "parkingType": 'Garage', // (e.g., Covered, Uncovered, Garage)
+        "coveredArea": 2, // covered area in sqft
+        "uncoveredArea": 2, // uncovered area in sqft
+
+        "hasSolar": 'Yes', // (e.g., Yes, No)
+        "solarWaterHeater": 'Yes', // (e.g., Yes, No)
+        "airConditioning": 'Yes', // (e.g., Yes, No)
+        "airConditioningType": 'Partly', // (e.g., All rooms, Partly)
+        
+        "amenities": ["Pool", "Gym", "Security"], // list of available amenities
+        
+        "images": [File], // array of image files (multipart/form-data)
+        "videos": [File], // array of video files (multipart/form-data)
+        "virtualTour": "https://example.com/tour", // URL for virtual tour
+      
+        "price": 500000, // required, price of the property
+        "currency": "INR", // required, currency code (e.g., INR, USD)
+        "priceNegotiable": true, // whether the price is negotiable
+        
+        "maintenanceCharge": 3000, // monthly maintenance charge
+        "expectedDeposit": 50000, // expected security deposit
+        "pricePerSqft": 333.33, // price per square foot
+      
+        "ownerId": "USER123", // required, ID of the property owner
+        "sellerAgentId": "AGENT001", // optional, ID of the listing agent
+        "exclusiveListing": true, // whether the listing is exclusive
+        "listingStatus": "Pending", // listing status (e.g., Pending, Approved, Sold)
+        "availableFrom": "2025-05-01", // date of availability
+        
+        "propertyDocuments": [File], // array of legal documents (multipart/form-data)
+        "legalClearance": true, // whether the property has legal clearance
+        "loanEligible": true, // whether the property is eligible for loans
+        "reraApproved": true, // whether the property is RERA approved
+        "reraNumber": "RERA12345" // RERA registration number
+}</code></pre>
+    <p><strong>Response:</strong></p>
+    <pre><code>{
+  "status": "success",
+  "propertyId": "abc123",
+  "message": "Property saved as draft"
+}</code></pre>
+
+    <h3>Step 2: Preview Agreement</h3>
+    <h4>GET /api/v1/property/{propertyId}/preview-agreement</h4>
+    <p><strong>Response:</strong></p>
+    <pre><code>{
+  "propertyId": "abc123",
+  "agreementText": "This is a preview of your agreement for listing XYZ...",
+  "placeholders": {
+    "ownerName": "John Doe",
+    "agentCommission": "2.5%",
+    "startDate": "2025-05-01",
+    "endDate": "2025-06-01"
+  }
+}</code></pre>
+
+    <h3>Step 3: Generate Agreement</h3>
+    <h4>POST /api/v1/property/{propertyId}/generate-agreement</h4>
+    <p><strong>Request Body:</strong></p>
+    <pre><code>{
+  "startDate": "2025-05-01", // agreement start date
+  "endDate": "2025-06-01"   // agreement end date
+}</code></pre>
+    <p><strong>Response:</strong></p>
+    <pre><code>{
+  "status": "success",
+  "agreementUrl": "https://example.com/agreements/abc123.pdf"
+}</code></pre>
+
+    <h3>Step 4: Sign Agreement</h3>
+    <h4>POST /api/v1/property/{propertyId}/sign-agreement</h4>
+    <p><strong>Request Body:</strong></p>
+    <pre><code>{
+  "signature": "base64-encoded-signature-image", // base64 image /String
+  "signedDate": "2025-04-21" // date when signed
+}</code></pre>
+    <p><strong>Response:</strong></p>
+    <pre><code>{
+  "status": "success",
+  "message": "Agreement signed and submitted",
+  "signedAgreementUrl": "https://example.com/signed/abc123.pdf"
+}</code></pre>
+
+    <h3>Optional: Finalize Property Listing</h3>
+    <h4>PATCH /api/v1/property/{propertyId}/finalize</h4>
+    <p><strong>Response:</strong></p>
+    <pre><code>{
+  "status": "success",
+  "message": "Property listing finalized and ready for admin approval"
+}</code></pre>
+  </div>
+
+  <!-- 2. Get Property List -->
+  <div class="endpoint">
+    <h2>2. Get Property List</h2>
+    <h3>GET /api/v1/properties</h3>
+    <p><strong>Query Parameters:</strong></p>
+    <pre><code>{
+  "type": "Apartment", // filter by property type
+  "category": "Rent", // filter by category (e.g., Rent, Sale)
+  "city": "Delhi", // filter by city
+  "state": "Maharashtra", // filter by state
+  "minPrice": 100000, // filter properties with a minimum price
+  "maxPrice": 1000000, // filter properties with a maximum price
+  "bedrooms": 2, // filter properties with a certain number of bedrooms
+  "limit": 10, // limit the number of properties returned
+  "page": 1 // pagination, specify the page number
+}</code></pre>
+    <p><strong>Response:</strong> List of properties matching the query parameters</p>
+  </div>
+
+  <!-- 3. Get Property by ID -->
+  <div class="endpoint">
+    <h2>3. Get Property Details</h2>
+    <h3>GET /api/v1/properties/{propertyId}</h3>
+    <p><strong>Path Parameter:</strong> <code>propertyId</code> (string, the unique ID of the property)</p>
+    <p><strong>Response:</strong> Detailed information about the specified property</p>
+  </div>
+
+  <!-- 4. Update Property -->
+  <div class="endpoint">
+    <h2>4. Update Property</h2>
+    <h3>PATCH /api/v1/properties/{propertyId}</h3>
+    <pre><code>{
+  "price": 550000, // update the price of the property
+  "title": "Updated Apartment Title", // update the title
+  "bedrooms": 4 // update the number of bedrooms
+}</code></pre>
+    <p><strong>Response:</strong> Confirmation that the property has been updated successfully</p>
+  </div>
+
+  <!-- 5. Approve Property -->
+  <div class="endpoint">
+    <h2>5. Approve Property Listing</h2>
+    <h3>PATCH /api/v1/properties/{propertyId}/approve</h3>
+    <p><strong>Headers:</strong> Authorization: Bearer <code>{admin_token}</code></p>
+    <p><strong>Response:</strong> Confirmation that the property has been approved</p>
+  </div>
+
+  <!-- 6. Reject Property -->
+  <div class="endpoint">
+    <h2>6. Reject Property Listing</h2>
+    <h3>PATCH /api/v1/properties/{propertyId}/reject</h3>
+    <p><strong>Headers:</strong> Authorization: Bearer <code>{admin_token}</code></p>
+    <p><strong>Optional Body:</strong> Provide a reason for rejection</p>
+    <pre><code>{
+  "reason": "Incomplete legal documents" // optional, reason for rejection
+}</code></pre>
+    <p><strong>Response:</strong> Confirmation that the property has been rejected</p>
+  </div>
+
+  <div class="note">
+    <h3>🔍 Notes:</h3>
+    <ul>
+      <li>Use <strong>multipart/form-data</strong> for file uploads (images, documents, etc.)</li>
+      <li>Provide specific query parameters to filter property listings</li>
+    </ul>
+  </div>
+
+</body>
+</html>
