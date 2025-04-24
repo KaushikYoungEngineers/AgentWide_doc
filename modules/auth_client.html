@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Authentication Flow API</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; background: #fdfdfd; padding: 2rem; }
+    h1, h2, h3 { color: #222; }
+    pre {
+      background: #f4f4f4;
+      padding: 1rem;
+      border-left: 4px solid #007BFF;
+      overflow-x: auto;
+    }
+    code { font-family: monospace; }
+    .endpoint {
+      margin-bottom: 2rem;
+    }
+    .note {
+      background: #fff3cd;
+      padding: 1rem;
+      border-left: 4px solid #ffc107;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔐 Authentication Flow API (Client)</h1>
+
+  <div class="endpoint">
+    <h2>1. Login API</h2>
+    <h3>POST /api/v1/client/login</h3>
+    <pre><code>{
+  "email": "string",
+  "password": "string", // For email login
+  "login_type": "string", // Enum: "email", "google", "facebook", "apple"
+  "token": "string" // Required for social auth
+}</code></pre>
+    <p><strong>Response:</strong> Same as <code>GET /api/v1/client/onboarding-details</code></p>
+  </div>
+
+  <div class="endpoint">
+    <h2>2. Get Onboarding Details</h2>
+    <h3>GET /api/v1/client/onboarding-details</h3>
+    <p><strong>Headers:</strong> Authorization: Bearer {user_token}</p>
+    <pre><code>{
+  "user_token": "string",
+  "profile_data": {
+    // All registration fields with their current values
+  }
+}</code></pre>
+  </div>
+
+  <div class="endpoint">
+    <h2>3. Registration API</h2>
+    <h3>POST /api/v1/client/signup</h3>
+    <pre><code>{
+  "profile_img": "file", // optional
+  "name": "string",
+  "email": "string",
+  "mobile_number": "string",
+  "password": "string",
+  "country": "string",
+  "user_role": "string",
+  "aw_agreement_signed": "boolean",
+  "is_client": "boolean",
+  "contact_method": "string",
+  "contact_number": "string",
+  "tou_accepted": "boolean"
+}</code></pre>
+
+  <div class="endpoint">
+    <h2>4. Forgot Password APIs</h2>
+
+    <h3>POST /api/v1/agent/forgot-password</h3>
+    <pre><code>{
+  "email": "string"
+}</code></pre>
+
+    <h3>POST /api/v1/agent/verify-email-code</h3>
+    <pre><code>{
+  "email": "string",
+  "code": "string"
+}</code></pre>
+
+    <h3>POST /api/v1/auth/reset-password</h3>
+    <pre><code>{
+  "email": "string",
+  "new_password": "string"
+}</code></pre>
+  </div>
+
+  <div class="note">
+    <h3>🔍 Notes:</h3>
+    <ul>
+      <li>Use <strong>multipart/form-data</strong> for file uploads</li>
+      <li>Return appropriate HTTP status codes</li>
+      <li>Include detailed messages in error responses</li>
+      <li>Authorization header required after login</li>
+      <li>All registration fields are optional per step</li>
+      <li>Single unified endpoint used for all registration steps</li>
+    </ul>
+  </div>
+
+</body>
+</html>
