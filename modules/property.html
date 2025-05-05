@@ -39,10 +39,22 @@
 }</code></pre>
     <p><strong>Body:</strong></p>
     <pre><code>{
-  "title": "Luxury Apartment",
+  "title": "Luxury Apartment", // Required
   "description": "Sea-facing 3BHK apartment",
-  "type": "Apartment",
-  "category": "Sale",
+  "propertyType": "Single property", // (Single property, Project) // Required
+  "type": "Appartments", // Required
+  "category": "Sale", // Required
+  "ownerId": "USER123", // Required
+  "sellerAgentId": "AGENT001",
+  "buyerId": "USER123",
+  "price": 500000, // Required
+  "currency": "INR", // Required,
+  "agreementType": "Exclusive", // (Exclusive, Non-Exclusive) // Required
+  "agentCommission": 5, // Required
+  "commissionSplit": 30, // Required
+  "availableFrom": "2025-05-01", // Required (if propertyType is Single property),
+  "durationFrom": "2025-05-01", // Required (if propertyType is Project),
+  "durationTo": "2025-05-01", // Required (if propertyType is Project),
   "propertyUse": "Residential",
   "availability": "Immediate",
   "address": "123 Street Name",
@@ -71,24 +83,18 @@
   "images": [File],
   "videos": [File],
   "virtualTour": "https://example.com/tour",
-  "price": 500000,
-  "currency": "INR",
   "priceNegotiable": true,
   "maintenanceCharge": 3000,
   "expectedDeposit": 50000,
   "pricePerSqft": 333.33,
-  "ownerId": "USER123",
-  "sellerAgentId": "AGENT001",
   "exclusiveListing": true,
   "listingStatus": "Pending",
-  "availableFrom": "2025-05-01",
   "propertyDocuments": [File],
   "legalClearance": true,
   "loanEligible": true,
   "reraApproved": true,
   "reraNumber": "RERA12345",
   "status": "Available", // Available / Sold / Rented
-  "buyerId": "USER123",
 }</code></pre>
     <p><strong>Response:</strong></p>
     <pre><code>{
@@ -138,7 +144,8 @@
     <p><strong>Request Body:</strong></p>
     <pre><code>{
   "signature": "base64-encoded-signature-image",
-  "signedDate": "2025-04-21"
+  "signedDate": "2025-04-21",
+  "ownerId": "ABC123"
 }</code></pre>
     <p><strong>Response:</strong></p>
     <pre><code>{
@@ -148,6 +155,8 @@
     "signedAgreementUrl": "https://example.com/signed/abc123.pdf"
   }
 }</code></pre>
+
+<p><strong>Note:</strong> Sent a notification to owner for recived agreement againts property</p>
 
     <h3>Optional: Finalize Property Listing</h3>
     <h4>PATCH /api/v1/property/{propertyId}/finalize</h4>
@@ -225,22 +234,43 @@
 }</code></pre>
   </div>
 
-  <!-- 6. Reject Property -->
-  <div class="endpoint">
-    <h2>6. Reject Property Listing</h2>
-    <h3>PATCH /api/v1/properties/{propertyId}/reject</h3>
-    <p><strong>Headers:</strong> Authorization: Bearer <code>{admin_token}</code></p>
-    <p><strong>Optional Body:</strong></p>
-    <pre><code>{
-  "reason": "Incomplete legal documents"
+<!-- 6. Reject Property -->
+<div class="endpoint">
+  <h2>6. Reject Property Listing</h2>
+  <h3>PATCH /api/v1/properties/{propertyId}/reject</h3>
+  <p><strong>Headers:</strong> Authorization: Bearer <code>{admin_token}</code></p>
+
+  <p><strong>Body (optional):</strong></p>
+  <pre><code>{
+  "reason": "Incomplete legal documents",
+  "fieldFeedback": [
+    {
+      "field": "price",
+      "status": "Rejected",
+      "reason": "Price is unrealistic for this location."
+    },
+    {
+      "field": "reraNumber",
+      "status": "Rejected",
+      "reason": "RERA number missing or invalid."
+    }
+  ]
 }</code></pre>
-    <p><strong>Response:</strong></p>
-    <pre><code>{
+
+<p><strong>Note:</strong></p>
+<ul>
+  <li>All <code>fieldFeedback</code> entries will be <strong>dynamically generated from the mobile app</strong> based on the fields the owner chooses to reject.</li>
+  <li><strong>Send a notification</strong> to the agent when the property is rejected.</li>
+  <li>Ensure <code>fieldFeedback</code> is returned in the response of <code>GET /api/v1/properties/{propertyId}</code> to display rejected fields in the agent’s view.</li>
+</ul>
+
+  <p><strong>Response:</strong></p>
+  <pre><code>{
   "status": "success",
   "message": "Property rejected",
   "data": null
 }</code></pre>
-  </div>
+</div>
 
   <div class="note">
     <h3>🔍 Notes:</h3>
