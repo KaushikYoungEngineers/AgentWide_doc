@@ -66,40 +66,6 @@
     "state": "Maharashtra",
     // Whole object from Client user table
   },
-
-  "agreementId": {
-    "agreementId": "abc123",
-    "status": "Pending" // Pending / Signed / Rejected`
-    "agent_id": "AGENT001",
-    "owner_id": "OWNER001",
-    "propertyId": "abc123",
-    "signedAgreementUrl": "https://example.com/signed/abc123.pdf",
-    "agreementTextSummary": "abc123"
-  }, 
-
-  "floor": 5,
-  "bedrooms": 3,
-  "bathrooms": 2,
-  "livingRooms": 2,
-  "parking": true,
-  "parkingType": "Garage", // (Garage, UnCovered, Covered)
-  "coveredArea": 2,
-  "uncoveredArea": 2,
-  "parkingDescription": "2 Car Garage",
-  "constructingYear": 2020,
-  "availability": "Immediate",
-  "hasSolar": "Yes",
-  "solarWaterHeater": "Yes",
-  "furnishing": "Full", // (Full, Half, Repurchase)
-  "airConditioning": "Yes",
-  "airConditioningType": "Partly", // (Partly, All rooms)
-  "virtualTour": "https://example.com/tour",
-  "priceNegotiable": true,
-  "unitAmenities": ["Pool", "Gym", "Security"],
-  "buildingAmenities": ["Pool", "Gym", "Security"],
-  "coordinates": { "lat": 19.07, "lng": 72.87 },
-  "propertyImages": [File],
-  "status": "Available", // Available / Sold / Rented
 }</code></pre>
     <p><strong>Response:</strong></p>
     <pre><code>{
@@ -132,6 +98,19 @@
   }
 }</code></pre>
 
+<p><strong>Note:</strong> Also update the property from backend to assign agreement object to the property on 'agreement' like below</p>
+<pre><code>{
+  "agreement": {
+    "agreementId": "abc123",
+    "status": "Pending" // Pending / Signed / Rejected`
+    "agent_id": "AGENT001",
+    "owner_id": "OWNER001",
+    "propertyId": "abc123",
+    "signedAgreementUrl": "https://example.com/signed/abc123.pdf",
+    "agreementTextSummary": "abc123"
+  },
+}</code></pre>
+
     <h3>Step 3: Sign Agreement</h3>
     <h4>POST /api/v1/property/{propertyId}/sign-agreement</h4>
     <p><strong>Request Body:</strong></p>
@@ -156,7 +135,18 @@
 
 <p><strong>Note:</strong> They are already created Signed Agreement APIs, You can take reference from them</p>
 <p><strong>Note:</strong> Sent a notification to owner for recived agreement againts property</p>
-<p><strong>Note:</strong> Also update the property from backend to assign agreement object to the property on 'agreement'</p>
+<p><strong>Note:</strong> Also update the property from backend to assign agreement object to the property on 'agreement' like below</p>
+<pre><code>{
+  "agreement": {
+    "agreementId": "abc123",
+    "status": "Signed" // Pending / Signed / Rejected`
+    "agent_id": "AGENT001",
+    "owner_id": "OWNER001",
+    "propertyId": "abc123",
+    "signedAgreementUrl": "https://example.com/signed/abc123.pdf",
+    "agreementTextSummary": "abc123"
+  },
+}</code></pre>
 
   <!-- 2. Get Property List -->
   <div class="endpoint">
