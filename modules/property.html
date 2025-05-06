@@ -55,45 +55,50 @@
   "availableFrom": "2025-05-01", // Required (if propertyType is Single property),
   "durationFrom": "2025-05-01", // Required (if propertyType is Project),
   "durationTo": "2025-05-01", // Required (if propertyType is Project),
-  "propertyUse": "Residential",
-  "availability": "Immediate",
-  "address": "123 Street Name",
-  "city": "Mumbai",
-  "state": "Maharashtra",
-  "country": "India",
-  "zipcode": "400001",
-  "coordinates": { "lat": 19.07, "lng": 72.87 },
+
+  "owner" : {
+    "id": "OWNER001",
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "phone": "+919876543210",
+    "address": "123 Street Name",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    // Whole object from Client user table
+  },
+
+  "agreementId": {
+    "agreementId": "abc123",
+    "status": "Pending" // Pending / Signed / Rejected`
+    "agent_id": "AGENT001",
+    "owner_id": "OWNER001",
+    "propertyId": "abc123",
+    "signedAgreementUrl": "https://example.com/signed/abc123.pdf",
+    "agreementTextSummary": "abc123"
+  }, 
+
+  "floor": 5,
   "bedrooms": 3,
   "bathrooms": 2,
-  "balconies": 2,
-  "area": { "value": 1500, "unit": "sqft" },
-  "builtYear": 2020,
-  "floor": 5,
-  "totalFloors": 10,
-  "furnishing": "Semi-Furnished",
+  "livingRooms": 2,
   "parking": true,
-  "parkingType": "Garage",
+  "parkingType": "Garage", // (Garage, UnCovered, Covered)
   "coveredArea": 2,
   "uncoveredArea": 2,
+  "parkingDescription": "2 Car Garage",
+  "constructingYear": 2020,
+  "availability": "Immediate",
   "hasSolar": "Yes",
   "solarWaterHeater": "Yes",
+  "furnishing": "Full", // (Full, Half, Repurchase)
   "airConditioning": "Yes",
-  "airConditioningType": "Partly",
-  "amenities": ["Pool", "Gym", "Security"],
-  "images": [File],
-  "videos": [File],
+  "airConditioningType": "Partly", // (Partly, All rooms)
   "virtualTour": "https://example.com/tour",
   "priceNegotiable": true,
-  "maintenanceCharge": 3000,
-  "expectedDeposit": 50000,
-  "pricePerSqft": 333.33,
-  "exclusiveListing": true,
-  "listingStatus": "Pending",
-  "propertyDocuments": [File],
-  "legalClearance": true,
-  "loanEligible": true,
-  "reraApproved": true,
-  "reraNumber": "RERA12345",
+  "unitAmenities": ["Pool", "Gym", "Security"],
+  "buildingAmenities": ["Pool", "Gym", "Security"],
+  "coordinates": { "lat": 19.07, "lng": 72.87 },
+  "propertyImages": [File],
   "status": "Available", // Available / Sold / Rented
 }</code></pre>
     <p><strong>Response:</strong></p>
@@ -105,68 +110,53 @@
   }
 }</code></pre>
 
-    <h3>Step 2: Preview Agreement</h3>
-    <h4>GET /api/v1/property/{propertyId}/preview-agreement</h4>
-    <p><strong>Response:</strong></p>
-    <pre><code>{
-  "status": "success",
-  "message": "Agreement preview generated",
-  "data": {
-    "propertyId": "abc123",
-    "agreementText": "This is a preview of your agreement for listing XYZ...",
-    "placeholders": {
-      "ownerName": "John Doe",
-      "agentCommission": "2.5%",
-      "startDate": "2025-05-01",
-      "endDate": "2025-06-01"
-    }
-  }
-}</code></pre>
-
-    <h3>Step 3: Generate Agreement</h3>
+    <h3>Step 2: Generate Agreement</h3>
     <h4>POST /api/v1/property/{propertyId}/generate-agreement</h4>
     <p><strong>Request Body:</strong></p>
     <pre><code>{
   "startDate": "2025-05-01",
-  "endDate": "2025-06-01"
+  "endDate": "2025-06-01",
+  "status": "Pending" // Pending / Signed / Rejected
+  "agent_id": "AGENT001",
+  "owner_id": "OWNER001",
+  "propertyId": "abc123"
 }</code></pre>
     <p><strong>Response:</strong></p>
     <pre><code>{
   "status": "success",
   "message": "Agreement generated successfully",
   "data": {
-    "agreementUrl": "https://example.com/agreements/abc123.pdf"
+    "agreementId": "abc123",
+    "agreementUrl": "https://example.com/agreements/abc123.pdf",
+    "agreementTextSummary": "abc123"
   }
 }</code></pre>
 
-    <h3>Step 4: Sign Agreement</h3>
+    <h3>Step 3: Sign Agreement</h3>
     <h4>POST /api/v1/property/{propertyId}/sign-agreement</h4>
     <p><strong>Request Body:</strong></p>
     <pre><code>{
+  "agreementId": "abc123",
   "signature": "base64-encoded-signature-image",
   "signedDate": "2025-04-21",
-  "ownerId": "ABC123"
+  "agent_id": "AGENT001",
+  "owner_id": "OWNER001",
+  "propertyId": "abc123"
 }</code></pre>
     <p><strong>Response:</strong></p>
     <pre><code>{
   "status": "success",
   "message": "Agreement signed and submitted",
   "data": {
-    "signedAgreementUrl": "https://example.com/signed/abc123.pdf"
+    "agreementId": "abc123",
+    "signedAgreementUrl": "https://example.com/signed/abc123.pdf",
+    "agreementTextSummary": "abc123"
   }
 }</code></pre>
 
+<p><strong>Note:</strong> They are already created Signed Agreement APIs, You can take reference from them</p>
 <p><strong>Note:</strong> Sent a notification to owner for recived agreement againts property</p>
-
-    <h3>Optional: Finalize Property Listing</h3>
-    <h4>PATCH /api/v1/property/{propertyId}/finalize</h4>
-    <p><strong>Response:</strong></p>
-    <pre><code>{
-  "status": "success",
-  "message": "Property listing finalized and ready for admin approval",
-  "data": null
-}</code></pre>
-  </div>
+<p><strong>Note:</strong> Also update the property from backend to assign agreement object to the property on 'agreement'</p>
 
   <!-- 2. Get Property List -->
   <div class="endpoint">
@@ -192,6 +182,11 @@
 }</code></pre>
   </div>
 
+  <p><strong>Note:</strong></p>
+  <ul>
+    <li>Provide all the data of property. (From create, update/manage and add units).</li>
+  </ul>
+
   <!-- 3. Get Property by ID -->
   <div class="endpoint">
     <h2>3. Get Property Details</h2>
@@ -204,14 +199,52 @@
 }</code></pre>
   </div>
 
+  <p><strong>Note:</strong></p>
+  <ul>
+    <li>Provide all the data of property. (From create, update/manage and add units).</li>
+  </ul>
+
   <!-- 4. Update Property -->
   <div class="endpoint">
-    <h2>4. Update Property</h2>
+    <h2>4. Update/Manage Property</h2>
     <h3>PATCH /api/v1/properties/{propertyId}</h3>
     <pre><code>{
-  "price": 550000,
-  "title": "Updated Apartment Title",
-  "bedrooms": 4
+  // Rest all the fields are same as the create property API (If need to update)
+
+  // Additional fields for update and manage Single property
+  "floor": 5,
+  "bedrooms": 3,
+  "bathrooms": 2,
+  "livingRooms": 2,
+  "parking": true,
+  "parkingType": "Garage", // (Garage, UnCovered, Covered)
+  "coveredArea": 2,
+  "uncoveredArea": 2,
+  "parkingDescription": "2 Car Garage",
+  "constructingYear": 2020,
+  "availability": "Immediate",
+  "hasSolar": "Yes",
+  "solarWaterHeater": "Yes",
+  "furnishing": "Full", // (Full, Half, Repurchase)
+  "airConditioning": "Yes",
+  "airConditioningType": "Partly", // (Partly, All rooms)
+  "virtualTour": "https://example.com/tour",
+  "priceNegotiable": true,
+  "unitAmenities": ["Pool", "Gym", "Security"],
+  "buildingAmenities": ["Pool", "Gym", "Security"],
+  "coordinates": { "lat": 19.07, "lng": 72.87 },
+  "propertyImages": [File],
+  "status": "Available", // Available / Sold / Rented
+
+  // If property is a whole project, then add following additional fields
+  "ptojctType" : "Apartment", // (Apartment, Commercial, Industrial, Land)
+  "totalBuilding" : 1000,
+  "unitNumber" : 100,
+  "unitPriceRange" : "1000000 - 1500000",
+  "unitSquareSize" : "1000 - 1500",
+  "parkingSlot" : 100,
+  "isProjectImageverified" : true,
+  "projectCatalogue" : [File],
 }</code></pre>
     <p><strong>Response:</strong></p>
     <pre><code>{
@@ -221,9 +254,55 @@
 }</code></pre>
   </div>
 
-  <!-- 5. Approve Property -->
+    <!-- 4. Add Units -->
+    <div class="endpoint">
+      <h2>5. Add Units to the property</h2>
+      <h3>PATCH /api/v1/properties/add-units/{propertyId}</h3>
+      <pre><code>{
+        "units" : [
+          {
+            "floor": 5,
+            "bedrooms": 3,
+            "bathrooms": 2,
+            "livingRooms": 2,
+            "parking": true,
+            "parkingType": "Garage", // (Garage, UnCovered, Covered)
+            "coveredArea": 2,
+            "uncoveredArea": 2,
+            "parkingDescription": "2 Car Garage",
+            "constructingYear": 2020,
+            "availability": "Immediate",
+            "hasSolar": "Yes",
+            "solarWaterHeater": "Yes",
+            "furnishing": "Full", // (Full, Half, Repurchase)
+            "airConditioning": "Yes",
+            "airConditioningType": "Partly", // (Partly, All rooms)
+            "virtualTour": "https://example.com/tour",
+            "priceNegotiable": true,
+            "unitAmenities": ["Pool", "Gym", "Security"],
+            "buildingAmenities": ["Pool", "Gym", "Security"],
+            "coordinates": { "lat": 19.07, "lng": 72.87 },
+            "propertyImages": [File],
+            "status": "Available", // Available / Sold / Rented
+          }
+        ]
+  }</code></pre>
+      <p><strong>Response:</strong></p>
+      <pre><code>{
+    "status": "success",
+    "message": "Property updated successfully",
+    "data": null
+  }</code></pre>
+    </div>
+
+    <p><strong>Note:</strong></p>
+<ul>
+  <li>All units are added to the property.</li>
+</ul>
+
+  <!-- 6. Approve Property -->
   <div class="endpoint">
-    <h2>5. Approve Property Listing</h2>
+    <h2>6. Approve Property Listing</h2>
     <h3>PATCH /api/v1/properties/{propertyId}/approve</h3>
     <p><strong>Headers:</strong> Authorization: Bearer <code>{admin_token}</code></p>
     <p><strong>Response:</strong></p>
@@ -234,9 +313,9 @@
 }</code></pre>
   </div>
 
-<!-- 6. Reject Property -->
+<!-- 7. Reject Property -->
 <div class="endpoint">
-  <h2>6. Reject Property Listing</h2>
+  <h2>7. Reject Property Listing</h2>
   <h3>PATCH /api/v1/properties/{propertyId}/reject</h3>
   <p><strong>Headers:</strong> Authorization: Bearer <code>{admin_token}</code></p>
 
