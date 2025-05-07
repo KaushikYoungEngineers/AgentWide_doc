@@ -121,6 +121,69 @@
 }</code></pre>
   </div>
 
+  <div class="endpoint">
+    <h2>5. Social Login Flow</h2>
+    <h3>POST /api/v1/agent/login</h3>
+    <p><strong>Request Body (for social login):</strong></p>
+    <pre><code>{
+  "login_type": "string", // Enum: "google", "facebook", "apple"
+  "token": "string"       // ID token from social provider
+}</code></pre>
+
+    <p><strong>Backend Flow:</strong></p>
+    <ul>
+      <li>Verify the token using the provider’s API</li>
+      <li>If the user exists → log them in</li>
+      <li>If the user does NOT exist → create user with profile from social data</li>
+      <li>Mark <code>step = 2</code> to indicate onboarding begins from role selection</li>
+    </ul>
+
+    <h4>Sample Response (Step 2 Required):</h4>
+    <pre><code>{
+  "status": true,
+  "message": "Login successful",
+  "data": {
+    "token": "your_access_token",
+    "refresh_token": "your_refresh_token",
+    "agent": {
+      "id": 21,
+      "profile_img": "https://image.url",
+      "name": "John Doe",
+      "email": "agent@example.com",
+      "mobile_number": null,
+      "country": null,
+      "licence_img": null,
+      "agency_id": null,
+      "trust_score": 0,
+      "tou_accepted": false,
+      "contact_method": null,
+      "contact_number": null,
+      "aw_agreement_signed": false,
+      "status": true,
+      "email_verified_at": null,
+      "created_at": "2025-04-26T10:50:29.000000Z",
+      "updated_at": "2025-05-07T06:56:52.000000Z",
+      "step": 2,
+      "document_type": null,
+      "document_number": null,
+      "document_front_img": null,
+      "document_back_img": null,
+      "user_role": null,
+      "licence_number": null,
+      "refresh_token": "your_refresh_token",
+      "refresh_token_expires_at": "2025-05-14T06:56:52.000000Z"
+    }
+  }
+}</code></pre>
+
+    <p><strong>Frontend Should:</strong></p>
+    <ul>
+      <li>Check if <code>step == 2</code></li>
+      <li>Redirect to Step 2: Role Selection</li>
+      <li>Prefill name, email, and profile image from response</li>
+    </ul>
+  </div>
+
   <div class="note">
     <h3>🔍 Notes:</h3>
     <ul>
@@ -130,6 +193,9 @@
       <li>Authorization header required after login</li>
       <li>All registration fields are optional per step</li>
       <li>Single unified endpoint used for all registration steps</li>
+      <li>Use the same endpoint <code>/api/v1/agent/login</code> for both email and social login</li>
+      <li>If <code>login_type</code> is present, treat it as social login</li>
+      <li>Step 1 is auto-filled from social provider; onboarding begins from Step 2</li>
     </ul>
   </div>
 
