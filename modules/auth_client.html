@@ -52,22 +52,40 @@
   </div>
 
   <div class="endpoint">
-    <h2>3. Registration API</h2>
+    <h2>3. Registration API (Multi-Step)</h2>
     <h3>POST /api/v1/client/signup</h3>
+
+      <h4>Step 1 - Basic Info</h4>
+      <pre><code>{
+    "profile_img": "file", // optional
+    "name": "string",
+    "email": "string",
+    "mobile_number": "string",
+    "password": "string",
+    "country": "string",
+    "user_role": "string",
+    "aw_agreement_signed": "boolean",
+    "is_client": "boolean",
+    "contact_method": "string",
+    "contact_number": "string",
+    "tou_accepted": "boolean"
+  }</code></pre>
+
+  <h4>Step 2 - Update user data</h4>
     <pre><code>{
   "profile_img": "file", // optional
   "name": "string",
   "email": "string",
-  "mobile_number": "string",
-  "password": "string",
-  "country": "string",
-  "user_role": "string",
-  "aw_agreement_signed": "boolean",
-  "is_client": "boolean",
-  "contact_method": "string",
-  "contact_number": "string",
-  "tou_accepted": "boolean"
+  // All the params of user's for update
+
+  "token": "string" // Required for update field
 }</code></pre>
+
+<p><strong>Note:</strong></p>
+<ul>
+  <li>If token is not provided, it will be created as a new user</li>
+  <li>If token is provided, it will update the user data</li>
+</ul>
 
   <div class="endpoint">
     <h2>4. Forgot Password APIs</h2>
@@ -88,6 +106,53 @@
   "email": "string",
   "new_password": "string"
 }</code></pre>
+  </div>
+
+  <div class="endpoint">
+    <h2>5. Social Login Flow</h2>
+    <h3>POST /api/v1/client/login</h3>
+    <p><strong>Request Body (for social login):</strong></p>
+    <pre><code>{
+  "login_type": "string", // Enum: "google", "facebook", "apple"
+  "token": "string"       // ID token from social provider
+}</code></pre>
+
+    <p><strong>Backend Flow:</strong></p>
+    <ul>
+      <li>Verify the token using the provider’s API</li>
+      <li>If the user exists → log them in</li>
+      <li>If the user does NOT exist → create user with profile from social data</li>
+    </ul>
+
+    <h4>Sample Response (Step 2 Required):</h4>
+    <pre><code>{
+  "status": true,
+  "message": "Login successful",
+  "data": {
+    "token": "your_access_token",
+    "refresh_token": "your_refresh_token",
+    "user": {
+      "profile_img": "file", // optional
+      "name": "string",
+      "email": "string",
+      "mobile_number": "string",
+      "password": "string",
+      "country": "string",
+      "user_role": "string",
+      "aw_agreement_signed": "boolean",
+      "is_client": "boolean",
+      "contact_method": "string",
+      "contact_number": "string",
+      "tou_accepted": "boolean"
+    }
+  }
+}</code></pre>
+
+    <p><strong>Frontend Should:</strong></p>
+    <ul>
+      <li>Redirect to Step based on data</li>
+      <li>Prefill name, email, and profile image from response</li>
+    </ul>
   </div>
 
   <div class="note">
