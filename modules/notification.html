@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>📬 Notification Module API</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; background: #fdfdfd; padding: 2rem; }
+    h1, h2, h3 { color: #222; }
+    pre {
+      background: #f4f4f4;
+      padding: 1rem;
+      border-left: 4px solid #007BFF;
+      overflow-x: auto;
+    }
+    code { font-family: monospace; }
+    .endpoint {
+      margin-bottom: 2rem;
+    }
+    .note {
+      background: #fff3cd;
+      padding: 1rem;
+      border-left: 4px solid #ffc107;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>📬 Notification Module API</h1>
+
+  <div class="endpoint">
+  <div class="endpoint">
+    <h2>1. Get User Notifications</h2>
+    <h3>GET /api/v1/notifications</h3>
+    <p><strong>Headers:</strong> Authorization: Bearer {user_token}</p>
+    <p><strong>Query Params:</strong> <code>?page=1&limit=10</code></p>
+    <pre><code>{
+  "status": true,
+  "data": [
+    {
+      "id": "notification_id",
+      "title": "string",
+      "body": "string",
+      "type": "info",
+      "is_read": false,
+      "created_at": "2025-04-30T10:00:00Z",
+      "payload": {
+        "created_at": "2025-04-30T10:00:00Z",
+        "isAgreement": true,
+        "isListing": false,
+        "listingId": "abc123",
+        "agreementId": "agr456",
+        "reason": "Agreement approved"
+      }
+      ...
+    }
+  ],
+  "pagination": {
+    "current_page": 1,
+    "total_pages": 2
+  }
+}</code></pre>
+  </div>
+
+  <div class="endpoint">
+    <h2>2. Mark Notification as Read</h2>
+    <h3>PATCH /api/v1/notifications/{notification_id}/read</h3>
+    <p><strong>Headers:</strong> Authorization: Bearer {user_token}</p>
+    <pre><code>{
+  "status": true,
+  "message": "Notification marked as read"
+}</code></pre>
+  </div>
+
+  <div class="endpoint">
+    <h2>3. Mark All Notifications as Read</h2>
+    <h3>PATCH /api/v1/notifications/read-all</h3>
+    <p><strong>Headers:</strong> Authorization: Bearer {user_token}</p>
+    <pre><code>{
+  "status": true,
+  "message": "All notifications marked as read"
+}</code></pre>
+  </div>
+
+  <div class="endpoint">
+    <h2>5. Trigger Events (When to Send Notifications)</h2>
+    <ul>
+      <li>✅ Listing successfully created — send to owner & assigned agent</li>
+      <li>📄 Agreement shared with agent or buyer — include <code>agreementId</code> in payload</li>
+      <li>✍️ Agreement signed — notify counter-party</li>
+      <li>🚫 Agreement rejected or expired — include reason in <code>payload.reason</code></li>
+      <li>📢 Admin broadcast or updates — general info notification</li>
+      <li>⚠️ Listing flagged, rejected, or unpublished — notify owner with <code>listingId</code> and <code>reason</code></li>
+    </ul>
+  </div>
+
+  <div class="note">
+    <h3>📝 Notes:</h3>
+    <ul>
+      <li>All fields in <code>payload</code> are optional and can be extended.</li>
+      <li>Trigger events define what backend should listen to for firing notifications.</li>
+      <li>Backend can use device tokens (FCM) to deliver push notifications when <code>send_push</code> is true.</li>
+    </ul>
+  </div>
+
+</body>
+</html>
