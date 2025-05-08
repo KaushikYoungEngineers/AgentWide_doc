@@ -109,7 +109,36 @@
   </div>
 
   <div class="endpoint">
-    <h2>5. Social Login Flow</h2>
+    <h2>5. Get All Clients (Filtered by Role)</h2>
+    <h3>POST /api/v1/client/get-all-clients</h3>
+    <p><strong>Request Body:</strong></p>
+    <pre><code>{
+  "user_role": "string" // optional - e.g., "buyer", "seller", etc.
+}</code></pre>
+
+    <h4>Response:</h4>
+    <pre><code>{
+  "status": true,
+  "message": "Clients fetched successfully",
+  "data": {
+    {
+      "id": "string",
+      "name": "string",
+      "email": "string",
+      "mobile_number": "string",
+      "country": "string",
+      "user_role": "string",
+      "is_client": true,
+      "profile_img": "url"
+      ...
+    },
+    ...
+  }
+}</code></pre>
+  </div>
+
+  <div class="endpoint">
+    <h2>6. Social Login Flow</h2>
     <h3>POST /api/v1/client/login</h3>
     <p><strong>Request Body (for social login):</strong></p>
     <pre><code>{
