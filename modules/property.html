@@ -55,6 +55,7 @@
   "availableFrom": "2025-05-01", // Required (if propertyType is Single property),
   "durationFrom": "2025-05-01", // Required (if propertyType is Project),
   "durationTo": "2025-05-01", // Required (if propertyType is Project),
+  "status": "Pending", // Pending / Approved / Rejected / Sold / Rented / Published / Draft / Paushed
 
   "owner" : {
     "id": "OWNER001",
@@ -76,7 +77,24 @@
   }
 }</code></pre>
 
-    <h3>Step 2: Generate Agreement</h3>
+<p><strong>Note:</strong> Sent a notification to owner for recived proposal againts property</p>
+<p><strong>Note:</strong> save a property with the status of "pending"</p>
+
+<p>Generate the agreement for the proposal with basic details that provided!</p>
+<p><strong>Note:</strong> Also update the property from backend to assign agreement object to the property on 'agreement' like below</p>
+<pre><code>{
+  "agreement": {
+    "agreementId": "abc123",
+    "status": "Pending" // Pending / Signed / Rejected / Published`
+    "agent_id": "AGENT001",
+    "owner_id": "OWNER001",
+    "propertyId": "abc123",
+    "signedAgreementUrl": "https://example.com/signed/abc123.pdf",
+    "agreementTextSummary": "abc123"
+  },
+}</code></pre>
+
+    <!-- <h3>Step 2: Generate Agreement</h3>
     <h4>POST /api/v1/property/{propertyId}/generate-agreement</h4>
     <p><strong>Request Body:</strong></p>
     <pre><code>{
@@ -109,9 +127,9 @@
     "signedAgreementUrl": "https://example.com/signed/abc123.pdf",
     "agreementTextSummary": "abc123"
   },
-}</code></pre>
+}</code></pre> -->
 
-    <h3>Step 3: Sign Agreement</h3>
+    <h3>Step 2: Sign Agreement</h3>
     <h4>POST /api/v1/property/{propertyId}/sign-agreement</h4>
     <p><strong>Request Body:</strong></p>
     <pre><code>{
@@ -132,8 +150,9 @@
     "agreementTextSummary": "abc123"
   }
 }</code></pre>
+<p><strong></strong>Note:</strong> Sent a confirmation notification to agent for start the manage the property</p>
 
-<p><strong>Note:</strong> They are already created Signed Agreement APIs, You can take reference from them</p>
+<!-- <p><strong>Note:</strong> They are already created Signed Agreement APIs, You can take reference from them</p>
 <p><strong>Note:</strong> Sent a notification to owner for recived agreement againts property</p>
 <p><strong>Note:</strong> Also update the property from backend to assign agreement object to the property on 'agreement' like below</p>
 <pre><code>{
@@ -146,7 +165,7 @@
     "signedAgreementUrl": "https://example.com/signed/abc123.pdf",
     "agreementTextSummary": "abc123"
   },
-}</code></pre>
+}</code></pre> -->
 
   <!-- 2. Get Property List -->
   <div class="endpoint">
@@ -291,8 +310,33 @@
 </ul>
 
   <!-- 6. Approve Property -->
+  <h2>6. Approve Property Listing</h2>
+  <h4>POST /api/v1/property/{propertyId}/send-for-approval</h4>
+  <p><strong>Request Body:</strong></p>
+  <pre><code>{
+"agreementId": "abc123",
+"signature": "base64-encoded-signature-image",
+"signedDate": "2025-04-21",
+"agent_id": "AGENT001",
+"owner_id": "OWNER001",
+"propertyId": "abc123"
+}</code></pre>
+  <p><strong>Response:</strong></p>
+  <pre><code>{
+"status": "success",
+"message": "Agreement signed and submitted",
+"data": {
+  "agreementId": "abc123",
+  "signedAgreementUrl": "https://example.com/signed/abc123.pdf",
+  "agreementTextSummary": "abc123"
+}
+}</code></pre>
+<p><strong>Note:</strong> Also update the 'agreement['status']' object in the property object as 'Signed'</p>
+<p><strong></strong>Note:</strong> Sent a notification to owner for recived proposal againts property</p>
+
+  <!-- 7. Approve Property -->
   <div class="endpoint">
-    <h2>6. Approve Property Listing</h2>
+    <h2>7. Approve Property Listing</h2>
     <h3>PATCH /api/v1/properties/{propertyId}/approve</h3>
     <p><strong>Headers:</strong> Authorization: Bearer <code>{admin_token}</code></p>
     <p><strong>Response:</strong></p>
@@ -301,6 +345,8 @@
   "message": "Property approved successfully",
   "data": null
 }</code></pre>
+<p><strong>Note:</strong> Also update the 'agreement['status']' object in the property object as 'Published'</p>
+<p><strong></strong>Note:</strong> Sent a notification to agent for approval of property</p>
   </div>
 
 <!-- 7. Reject Property -->
