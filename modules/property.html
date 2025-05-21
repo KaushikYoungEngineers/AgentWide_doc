@@ -47,7 +47,7 @@
   "ownerId": "USER123", // Required
   "sellerAgentId": "AGENT001",
   "buyerId": "USER123",
-  "price": 500000, // Required
+  "price": "1000000 - 1500000" / "5000", // Required (It's a range / fix price so accept it on String)
   "currency": "INR", // Required,
   "agreementType": "Exclusive", // (Exclusive, Non-Exclusive) // Required
   "agentCommission": 5, // Required
@@ -55,6 +55,8 @@
   "availableFrom": "2025-05-01", // Required (if propertyType is Single property),
   "durationFrom": "2025-05-01", // Required (if propertyType is Project),
   "durationTo": "2025-05-01", // Required (if propertyType is Project),
+  "floors": 10, // (for propertyType is Project),
+  "number_of_property": 10, // (for propertyType is Project),
   "status": "Pending", // Pending / Approved / Rejected / Sold / Rented / Published / Draft / Paushed
 
   "owner" : {
